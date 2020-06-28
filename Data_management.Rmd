@@ -1,0 +1,110 @@
+---
+title: "01_data_manipulation"
+author: "VC"
+date: "6/28/2020"
+output: html_document
+---
+
+
+
+Why use tidyverse?
+1. Base R can be painful with different data formats
+2. Its more intuitive and useful for new learners
+
+For example, often base R forces character to be converted to factors
+
+
+##dplyr package 
+ # dplyr package makes tabular data manipulation easier
+ # Many functions are compiled in C++ so its faster
+ # You can work with data stored in external data bases like SQL so removing limitation of memory as an issue
+ 
+##tidyr package 
+ # tidyr allows easier conversion between different data formats e.g., long and wide
+ #It makes such conversion easy
+
+Both these packages are available in umbrella package Tidyverse
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data
+
+
+```{r }
+data<- download.file(url="https://ndownloader.figshare.com/files/2292169",
+              destfile = "data/combined.csv")
+surveys<- read_csv("data/combined.csv")
+head(surveys)
+```
+
+## Packages
+
+
+```{r}
+#install.packages("tidyverse")
+library(tidyverse)
+```
+
+## Packages
+
+```{r}
+str(surveys)
+#View(surveys)
+
+```
+# Tibble
+ Tibble is like a data frame, characters are not coerced into columns
+ 
+# Functions we will use
+
+1. Select: subset columns
+2. Filer: subset rows based on condition
+3. mutate: create new columns by using info from other column
+4. group_by() and summarize(): create summary statistics on grouped data
+5. arrange(): sort results
+6. count(): count discrete values
+
+# Select specific columns
+```{r}
+select(surveys, plot_id,species_id,weight)
+```
+# Select all columns but other than specific columns
+```{r}
+select(surveys, -record_id, -species_id)
+```
+# Select rows based on specific condition
+```{r}
+filter(surveys, year==1995)
+```
+
+# Doing multiple steps 
+```{r}
+#select weight > 5g
+surveys2<-filter(surveys,weight<5) 
+# now slect only few columns
+surveys2_sml<- select(surveys2,species_id,sex,weight )
+```
+
+# We can do the same by nesting functions
+```{r}
+#select weight > 5g
+surveys2_sml<-select(filter(surveys, weight<5), species_id,sex,weight  )
+
+```
+
+# Doing multiple steps at a time
+#mac cmd+shift+m
+#windows ctrl+shift+m
+```{r}
+#select weight > 5g
+surveys2<-surveys %>% filter(weight<5) %>% 
+  select(species_id,sex,weight )
+```
+
+# Challenge
+Using pipes, subset the surveys data to include animals collected before 1995 and retain only the columns year, sex, and weight.
+
+
